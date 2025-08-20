@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+import API_BASE_URL from "../config"; // ✅ use central config
 
 export default function SearchResults() {
   const { query } = useParams(); // ✅ grab :query from URL
@@ -14,11 +16,9 @@ export default function SearchResults() {
       setLoading(true);
       setError("");
       try {
-        const res = await fetch(
-          `http://localhost:5000/api/news/search/${encodeURIComponent(query)}`
+        const { data } = await axios.get(
+          `${API_BASE_URL}/api/news/search/${encodeURIComponent(query)}` // ✅ dynamic base
         );
-        if (!res.ok) throw new Error("Failed to fetch results");
-        const data = await res.json();
 
         // Some backends return {articles: []}, others []
         setArticles(data.articles || data || []);

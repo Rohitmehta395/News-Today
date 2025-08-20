@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import api from "../utils/api";
+import axios from "axios";
+import API_BASE_URL from "../config"; // ✅ import central API base URL
 import CategorySection from "../components/CategorySection";
 
 export default function Category() {
@@ -12,9 +13,12 @@ export default function Category() {
     (async () => {
       setLoading(true);
       try {
-        const { data } = await api.get(`/news/${name}`);
+        const { data } = await axios.get(
+          `${API_BASE_URL}/api/news/${name}` // ✅ corrected endpoint
+        );
         setArticles(data.articles || []);
-      } catch {
+      } catch (err) {
+        console.error(`Error fetching ${name} news:`, err);
         setArticles([]);
       } finally {
         setLoading(false);

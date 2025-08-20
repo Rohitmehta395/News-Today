@@ -1,4 +1,3 @@
-// src/pages/Register.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +9,8 @@ export default function Register() {
   const navigate = useNavigate();
   const { isAuthenticated, login } = useAuth();
 
+  const API_BASE = import.meta.env.VITE_BACKEND_URL; // ✅ backend url from .env
+
   useEffect(() => {
     if (isAuthenticated) navigate("/");
   }, [isAuthenticated, navigate]);
@@ -18,15 +19,15 @@ export default function Register() {
     e.preventDefault();
     setError("");
     try {
-      const { data } = await axios.post("/api/auth/register", form);
+      const { data } = await axios.post(`${API_BASE}/api/auth/register`, form, {
+        withCredentials: true,
+      });
 
-      // If your backend returns token + user on register:
       if (data?.token && data?.user) {
         login({ token: data.token, user: data.user });
         navigate("/");
       } else {
-        // If backend only returns message, send them to login:
-        navigate("/login");
+        navigate("/login"); // fallback if backend doesn’t send token
       }
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");

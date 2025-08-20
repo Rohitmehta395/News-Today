@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import api from "../utils/api";
+import axios from "axios";
+import API_BASE_URL from "../config"; // ✅ import central API base URL
 import CategorySection from "../components/CategorySection";
 
 export default function Home({ nav = [] }) {
@@ -14,9 +15,12 @@ export default function Home({ nav = [] }) {
       await Promise.all(
         categories.map(async (cat) => {
           try {
-            const { data } = await api.get(`/news/${cat}`);
+            const { data } = await axios.get(
+              `${API_BASE_URL}/api/news/${cat}` // ✅ corrected endpoint
+            );
             result[cat] = data.articles || [];
-          } catch {
+          } catch (err) {
+            console.error(`Error fetching ${cat} news:`, err);
             result[cat] = [];
           }
         })

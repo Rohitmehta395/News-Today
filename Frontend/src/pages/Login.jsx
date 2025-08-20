@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +9,8 @@ export default function Login() {
   const navigate = useNavigate();
   const { isAuthenticated, login } = useAuth();
 
+  const API_BASE = import.meta.env.VITE_BACKEND_URL; // ✅ backend url from .env
+
   useEffect(() => {
     if (isAuthenticated) navigate("/");
   }, [isAuthenticated, navigate]);
@@ -18,7 +19,11 @@ export default function Login() {
     e.preventDefault();
     setError("");
     try {
-      const { data } = await axios.post("/api/auth/login", form);
+      const { data } = await axios.post(
+        `${API_BASE}/api/auth/login`,
+        form,
+        { withCredentials: true } // important for cookies (if using JWT cookies)
+      );
       if (data?.token && data?.user) {
         login({ token: data.token, user: data.user });
         navigate("/");
