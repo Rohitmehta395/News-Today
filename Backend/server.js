@@ -10,35 +10,28 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(express.json());
-
-// ✅ Debug log to check incoming origins
-app.use((req, res, next) => {
-  console.log("Incoming Origin:", req.headers.origin);
-  next();
-});
-
+// ✅ Allowed origins
 const allowedOrigins = [
-  "http://localhost:5173", // local dev
-  "https://news-today-alpha.vercel.app/", // replace with your exact Vercel URL
+  "https://news-today-alpha.vercel.app", // your Vercel frontend
+  "http://localhost:3000", // local dev
 ];
 
-// ✅ Flexible CORS
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow mobile/postman
+      // Allow requests with no origin (like mobile apps, curl, Postman)
+      if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) {
-        callback(null, true);
+        return callback(null, true);
       } else {
-        console.error("❌ CORS blocked:", origin);
-        callback(new Error("Not allowed by CORS"));
+        return callback(new Error("Not allowed by CORS: " + origin));
       }
     },
     credentials: true,
   })
 );
+
+app.use(express.json());
 
 // Routes
 app.use("/api/news", newsRoutes);
