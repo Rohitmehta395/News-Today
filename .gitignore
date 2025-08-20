@@ -9,3 +9,6 @@ coverage
 .vite
 .cache
 .DS_Store
+
+#git
+.gitignore
