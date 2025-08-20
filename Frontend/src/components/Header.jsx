@@ -1,14 +1,16 @@
+// src/components/Header.jsx
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Header({ nav = [] }) {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useAuth();
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (search.trim() !== "") {
-      // ✅ Route format: /search/:query
       navigate(`/search/${encodeURIComponent(search.trim())}`);
       setSearch("");
     }
@@ -16,11 +18,8 @@ export default function Header({ nav = [] }) {
 
   return (
     <header className="bg-white border-b">
-      {/* Top bar */}
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
-        {/* Left: menu + search */}
         <div className="flex items-center gap-4 text-black">
-          {/* Menu icon */}
           <button aria-label="Menu" className="p-1 hover:opacity-70">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <rect x="3" y="6" width="18" height="2" fill="currentColor" />
@@ -29,7 +28,6 @@ export default function Header({ nav = [] }) {
             </svg>
           </button>
 
-          {/* Search Form */}
           <form
             onSubmit={handleSearch}
             className="flex items-center border rounded px-2"
@@ -67,7 +65,6 @@ export default function Header({ nav = [] }) {
           </form>
         </div>
 
-        {/* Center: boxed “NEWS TODAY” logo */}
         <Link
           to="/"
           aria-label="Go to homepage"
@@ -84,16 +81,35 @@ export default function Header({ nav = [] }) {
           </span>
         </Link>
 
-        {/* Right: Auth */}
         <div className="flex items-center gap-3">
-          <button className="bg-black text-white px-4 py-1 rounded hover:bg-gray-800">
-            Register
-          </button>
-          <button className="font-semibold hover:underline">Sign In</button>
+          {isAuthenticated ? (
+            <>
+              <span className="text-sm text-gray-700">
+                Hi, {user?.name?.split(" ")[0] || "User"}
+              </span>
+              <button
+                onClick={logout}
+                className="bg-gray-900 text-white px-4 py-1 rounded hover:bg-gray-800"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/register"
+                className="bg-black text-white px-4 py-1 rounded hover:bg-gray-800"
+              >
+                Register
+              </Link>
+              <Link to="/login" className="font-semibold hover:underline">
+                Sign In
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Bottom nav */}
       <nav className="border-t">
         <ul className="max-w-6xl mx-auto flex gap-6 px-4 py-2 text-sm font-medium overflow-x-auto whitespace-nowrap">
           <li>

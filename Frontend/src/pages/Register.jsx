@@ -1,23 +1,35 @@
-import React, { useState } from "react";
+// src/pages/Register.jsx
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Register() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { isAuthenticated, login } = useAuth();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  useEffect(() => {
+    if (isAuthenticated) navigate("/");
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/register",
-        form
-      );
-      alert(res.data.message);
+      const { data } = await axios.post("/api/auth/register", form);
+
+      // If your backend returns token + user on register:
+      if (data?.token && data?.user) {
+        login({ token: data.token, user: data.user });
+        navigate("/");
+      } else {
+        // If backend only returns message, send them to login:
+        navigate("/login");
+      }
     } catch (err) {
-      alert(err.response.data.message);
+      setError(err.response?.data?.message || "Registration failed");
     }
   };
 
@@ -27,31 +39,35 @@ export default function Register() {
       className="space-y-4 max-w-md mx-auto p-4 border rounded"
     >
       <h2 className="text-xl font-bold">Register</h2>
+      {error && <p className="text-red-600">{error}</p>}
       <input
         type="text"
         name="name"
         placeholder="Name"
-        onChange={handleChange}
+        value={form.name}
+        onChange={(e) => setForm({ ...form, name: e.target.value })}
         className="w-full p-2 border rounded"
+        required
       />
       <input
         type="email"
         name="email"
         placeholder="Email"
-        onChange={handleChange}
+        value={form.email}
+        onChange={(e) => setForm({ ...form, email: e.target.value })}
         className="w-full p-2 border rounded"
+        required
       />
       <input
         type="password"
         name="password"
         placeholder="Password"
-        onChange={handleChange}
+        value={form.password}
+        onChange={(e) => setForm({ ...form, password: e.target.value })}
         className="w-full p-2 border rounded"
+        required
       />
-      <button
-        type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
+      <button type="submit" className="bg-black text-white px-4 py-2 rounded">
         Register
       </button>
     </form>
