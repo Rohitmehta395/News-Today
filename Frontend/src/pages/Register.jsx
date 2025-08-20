@@ -1,72 +1,52 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
 
 export default function Register() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
 
-  const handleRegister = (e) => {
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!name || !email || !password) {
-      setError("All fields are required.");
-      return;
-    }
-
-    // ✅ Save fake user
-    localStorage.setItem("user", JSON.stringify({ name, email }));
-
-    navigate("/"); // redirect to homepage
+    const res = await fetch("http://localhost:5000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+    const data = await res.json();
+    alert(data.message);
   };
 
   return (
-    <div className="flex items-center justify-center h-[80vh]">
-      <div className="w-full max-w-md bg-white shadow rounded-xl p-6">
-        <h2 className="text-2xl font-bold mb-4">Register</h2>
-
-        {error && <p className="text-red-500 mb-3">{error}</p>}
-
-        <form onSubmit={handleRegister} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Name"
-            className="w-full border p-2 rounded"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full border p-2 rounded"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full border p-2 rounded"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <button
-            type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
-          >
-            Register
-          </button>
-        </form>
-
-        <p className="mt-4 text-sm text-gray-600">
-          Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 underline">
-            Login
-          </Link>
-        </p>
-      </div>
+    <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow">
+      <h2 className="text-xl font-bold mb-4">Register</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          name="name"
+          placeholder="Name"
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+        />
+        <input
+          name="email"
+          placeholder="Email"
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+        />
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white p-2 rounded"
+        >
+          Register
+        </button>
+      </form>
     </div>
   );
 }

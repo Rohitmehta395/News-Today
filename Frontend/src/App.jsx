@@ -3,7 +3,9 @@ import { Routes, Route, Outlet } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./pages/Home.jsx";
 import Category from "./pages/Category.jsx";
-import SearchResults from "./pages/SearchResults.jsx"; // ✅ import search page
+import SearchResults from "./pages/SearchResults.jsx";
+import Login from "./pages/Login.jsx"; // ✅ import Login page
+import Register from "./pages/Register.jsx"; // ✅ import Register page
 
 const NAV_CATEGORIES = [
   "business",
@@ -32,14 +34,16 @@ export default function App() {
       <Route element={<Layout />}>
         {/* ✅ Home route */}
         <Route path="/" element={<Home nav={NAV_CATEGORIES} />} />
+
         {/* ✅ Category route */}
         <Route path="/category/:name" element={<Category />} />
+
         {/* ✅ Search route */}
         <Route path="/search/:query" element={<SearchResults />} />
-        {/* ✅ Login route */}
-        {/* <Route path="/login" element={<Login />} /> */}
-        {/* ✅ Register route */}
-        {/* <Route path="/register" element={<Register />} /> */}
+
+        {/* ✅ Auth routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Route>
     </Routes>
   );
