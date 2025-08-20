@@ -1,0 +1,11 @@
+# Node
+node_modules
+.env
+dist
+build
+coverage
+
+# React
+.vite
+.cache
+.DS_Store
