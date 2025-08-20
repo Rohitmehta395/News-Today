@@ -10,21 +10,29 @@ dotenv.config();
 
 const app = express();
 
-// ✅ Middleware
+// Middleware
 app.use(express.json());
 
-// ✅ Configure CORS (only allow your frontend)
+// ✅ Debug log to check incoming origins
+app.use((req, res, next) => {
+  console.log("Incoming Origin:", req.headers.origin);
+  next();
+});
+
 const allowedOrigins = [
-  "http://localhost:5173", // for local dev (Vite default)
-  "https://news-today.vercel.app", // replace with your actual Vercel domain
+  "http://localhost:5173", // local dev
+  "https://news-today-alpha.vercel.app/", // replace with your exact Vercel URL
 ];
 
+// ✅ Flexible CORS
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // allow mobile/postman
+      if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.error("❌ CORS blocked:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
@@ -32,17 +40,17 @@ app.use(
   })
 );
 
-// ✅ Routes
+// Routes
 app.use("/api/news", newsRoutes);
 app.use("/api/auth", authRoutes);
 
-// ✅ DB connection
+// DB connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
-// ✅ Start server
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
