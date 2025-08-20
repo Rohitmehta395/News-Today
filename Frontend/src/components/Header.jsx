@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Header({ nav = [] }) {
   const [search, setSearch] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, user, logout } = useAuth();
 
@@ -13,14 +14,21 @@ export default function Header({ nav = [] }) {
     if (search.trim() !== "") {
       navigate(`/search/${encodeURIComponent(search.trim())}`);
       setSearch("");
+      if (menuOpen) setMenuOpen(false);
     }
   };
 
   return (
     <header className="bg-white border-b">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
+        {/* Left Section: Menu + Search */}
         <div className="flex items-center gap-4 text-black">
-          <button aria-label="Menu" className="p-1 hover:opacity-70">
+          {/* Hamburger - only mobile */}
+          <button
+            aria-label="Menu"
+            className="p-1 hover:opacity-70 md:hidden"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <rect x="3" y="6" width="18" height="2" fill="currentColor" />
               <rect x="3" y="11" width="18" height="2" fill="currentColor" />
@@ -28,9 +36,10 @@ export default function Header({ nav = [] }) {
             </svg>
           </button>
 
+          {/* Search */}
           <form
             onSubmit={handleSearch}
-            className="flex items-center border rounded px-2"
+            className="hidden sm:flex items-center border rounded px-2"
           >
             <input
               type="text"
@@ -65,6 +74,7 @@ export default function Header({ nav = [] }) {
           </form>
         </div>
 
+        {/* Logo */}
         <Link
           to="/"
           aria-label="Go to homepage"
@@ -81,10 +91,11 @@ export default function Header({ nav = [] }) {
           </span>
         </Link>
 
+        {/* Auth Buttons */}
         <div className="flex items-center gap-3">
           {isAuthenticated ? (
             <>
-              <span className="text-sm text-gray-700">
+              <span className="text-sm text-gray-700 hidden sm:block">
                 Hi, {user?.name?.split(" ")[0] || "User"}
               </span>
               <button
@@ -110,7 +121,8 @@ export default function Header({ nav = [] }) {
         </div>
       </div>
 
-      <nav className="border-t">
+      {/* Desktop Nav */}
+      <nav className="border-t hidden md:block">
         <ul className="max-w-6xl mx-auto flex gap-6 px-4 py-2 text-sm font-medium overflow-x-auto whitespace-nowrap">
           <li>
             <NavLink
@@ -127,7 +139,6 @@ export default function Header({ nav = [] }) {
               Home
             </NavLink>
           </li>
-
           {nav.map((cat) => (
             <li key={cat}>
               <NavLink
@@ -146,6 +157,66 @@ export default function Header({ nav = [] }) {
           ))}
         </ul>
       </nav>
+
+      {/* Mobile Dropdown Nav */}
+      {menuOpen && (
+        <nav className="md:hidden border-t">
+          <ul className="flex flex-col gap-4 px-4 py-3 text-sm font-medium">
+            <form
+              onSubmit={handleSearch}
+              className="flex items-center border rounded px-2"
+            >
+              <input
+                type="text"
+                placeholder="Search news..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="outline-none px-2 py-1 text-sm w-full"
+              />
+              <button
+                type="submit"
+                aria-label="Search"
+                className="p-1 hover:opacity-70"
+              >
+                🔍
+              </button>
+            </form>
+            <li>
+              <NavLink
+                to="/"
+                end
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `pb-1 ${
+                    isActive
+                      ? "border-b-2 border-red-600 text-black"
+                      : "hover:text-red-600"
+                  }`
+                }
+              >
+                Home
+              </NavLink>
+            </li>
+            {nav.map((cat) => (
+              <li key={cat}>
+                <NavLink
+                  to={`/category/${cat}`}
+                  onClick={() => setMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `pb-1 ${
+                      isActive
+                        ? "border-b-2 border-red-600 text-black"
+                        : "hover:text-red-600"
+                    }`
+                  }
+                >
+                  {cat[0].toUpperCase() + cat.slice(1)}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </header>
   );
 }
