@@ -1,5 +1,5 @@
 // src/components/Header.jsx
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
@@ -10,41 +10,27 @@ export default function Header({ nav = [] }) {
   const navigate = useNavigate();
   const { isAuthenticated, user, logout } = useAuth();
 
-  // ✅ Base API URL
+  // ✅ Base API URL (no trailing /api here)
   const API_BASE = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
-  // ✅ Debounce helper
-  const debounce = (func, delay) => {
-    let timer;
-    return (...args) => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => func(...args), delay);
-    };
-  };
+  // ✅ fetch suggestions while typing
+  const handleChange = async (e) => {
+    const query = e.target.value;
+    setSearch(query);
 
-  // ✅ Fetch suggestions (debounced)
-  const fetchSuggestions = async (query) => {
     if (query.length > 1) {
       try {
         const res = await fetch(
           `${API_BASE}/api/suggest?q=${encodeURIComponent(query)}`
         );
         const data = await res.json();
-        setSuggestions(data || []);
+        setSuggestions(data);
       } catch (err) {
         console.error("Error fetching suggestions:", err);
       }
     } else {
       setSuggestions([]);
     }
-  };
-
-  const debouncedFetch = useCallback(debounce(fetchSuggestions, 300), []);
-
-  const handleChange = (e) => {
-    const query = e.target.value;
-    setSearch(query);
-    debouncedFetch(query);
   };
 
   const handleSearch = (e) => {
@@ -83,17 +69,17 @@ export default function Header({ nav = [] }) {
           </button>
 
           {/* Search (desktop) */}
-          <div className="relative w-48 sm:w-64 md:w-80">
+          <div className="relative">
             <form
               onSubmit={handleSearch}
-              className="hidden sm:flex items-center border rounded px-2 w-full"
+              className="hidden sm:flex items-center border rounded px-2"
             >
               <input
                 type="text"
                 placeholder="Search news..."
                 value={search}
                 onChange={handleChange}
-                className="outline-none px-2 py-1 text-sm w-full"
+                className="outline-none px-2 py-1 text-sm"
               />
               <button
                 type="submit"
@@ -122,7 +108,7 @@ export default function Header({ nav = [] }) {
 
             {/* Suggestions dropdown */}
             {suggestions.length > 0 && (
-              <ul className="absolute top-full left-0 w-full bg-white border rounded shadow-md mt-1 z-50 text-sm max-h-64 overflow-y-auto">
+              <ul className="absolute top-full left-0 w-full bg-white border rounded shadow-md mt-1 z-50 text-sm">
                 {suggestions.map((s, i) => (
                   <li
                     key={i}
@@ -234,12 +220,12 @@ export default function Header({ nav = [] }) {
                 placeholder="Search news..."
                 value={search}
                 onChange={handleChange}
-                className="outline-none px-2 py-2 text-base w-full"
+                className="outline-none px-2 py-1 text-sm w-full"
               />
               <button
                 type="submit"
                 aria-label="Search"
-                className="p-2 hover:opacity-70"
+                className="p-1 hover:opacity-70"
               >
                 🔍
               </button>
@@ -247,12 +233,12 @@ export default function Header({ nav = [] }) {
 
             {/* Mobile suggestions */}
             {suggestions.length > 0 && (
-              <ul className="bg-white border rounded shadow-md mt-2 z-50 text-base max-h-60 overflow-y-auto">
+              <ul className="bg-white border rounded shadow-md mt-1 z-50 text-sm">
                 {suggestions.map((s, i) => (
                   <li
                     key={i}
                     onClick={() => handleSuggestionClick(s)}
-                    className="px-3 py-2.5 hover:bg-gray-100 cursor-pointer"
+                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
                   >
                     {s}
                   </li>
