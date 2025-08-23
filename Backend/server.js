@@ -13,7 +13,8 @@ const app = express();
 
 // ✅ Allowed origins
 const allowedOrigins = [
-  "https://news-today-alpha.vercel.app", // your deployed frontend
+  "https://news-today-alpha.vercel.app",
+  "https://news-today-3mni58wog-rohitmehta395s-projects.vercel.app", // your deployed frontend
   "http://localhost:3000", // CRA dev
   "http://localhost:5173", // Vite dev
 ];
