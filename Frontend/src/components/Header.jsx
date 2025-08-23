@@ -11,15 +11,19 @@ export default function Header({ nav = [] }) {
   const { isAuthenticated, user, logout } = useAuth();
 
   // ✅ fetch suggestions while typing
+  // ✅ Base API URL (from env or fallback)
+  const API_BASE =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+
+  // ✅ fetch suggestions while typing
   const handleChange = async (e) => {
     const query = e.target.value;
     setSearch(query);
 
     if (query.length > 1) {
       try {
-        // 🔥 use `q` to match backend
         const res = await fetch(
-          `http://localhost:5000/api/suggest?q=${encodeURIComponent(query)}`
+          `${API_BASE}/suggest?q=${encodeURIComponent(query)}`
         );
         const data = await res.json();
         setSuggestions(data);
