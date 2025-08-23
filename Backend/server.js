@@ -13,7 +13,7 @@ const app = express();
 
 // ✅ Allowed origins
 const allowedOrigins = [
-  "https://news-today-alpha.vercel.app", // deployed frontend
+  "https://news-today-alpha.vercel.app", // your deployed frontend
   "http://localhost:3000", // CRA dev
   "http://localhost:5173", // Vite dev
 ];
@@ -21,12 +21,13 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps, curl, Postman)
+      // Allow requests with no origin (curl, Postman, mobile apps)
       if (!origin) return callback(null, true);
+
       if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
+        callback(null, true);
       } else {
-        return callback(new Error("Not allowed by CORS: " + origin));
+        callback(new Error("Not allowed by CORS: " + origin));
       }
     },
     credentials: true,
@@ -42,7 +43,10 @@ app.use("/api/suggest", suggestRoutes); // ✅ Autocomplete API
 
 // ✅ DB connection
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
