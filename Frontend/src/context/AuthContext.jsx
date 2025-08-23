@@ -19,7 +19,9 @@ export function AuthProvider({ children }) {
       return null;
     }
   });
+  const [loading, setLoading] = useState(true); // start as loading
 
+  // ✅ Sync state from storage
   const syncFromStorage = useCallback(() => {
     const t = localStorage.getItem("token");
     setToken(t);
@@ -30,6 +32,7 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  // ✅ Login
   const login = useCallback(
     ({ token, user }) => {
       localStorage.setItem("token", token);
@@ -40,6 +43,7 @@ export function AuthProvider({ children }) {
     [syncFromStorage]
   );
 
+  // ✅ Logout
   const logout = useCallback(() => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -47,6 +51,38 @@ export function AuthProvider({ children }) {
     window.dispatchEvent(new Event("auth"));
   }, [syncFromStorage]);
 
+  // ✅ Fetch user info from backend when token exists
+  const fetchUser = useCallback(async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data);
+        localStorage.setItem("user", JSON.stringify(data));
+      } else {
+        logout(); // invalid/expired token
+      }
+    } catch (err) {
+      console.error("❌ Failed to fetch user:", err);
+      logout();
+    } finally {
+      setLoading(false);
+    }
+  }, [token, logout]);
+
+  // ✅ Run once on mount to restore session
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  // ✅ Listen to storage + custom "auth" events
   useEffect(() => {
     const onStorage = (e) => {
       if (e.key === "token" || e.key === "user") syncFromStorage();
@@ -61,8 +97,15 @@ export function AuthProvider({ children }) {
   }, [syncFromStorage]);
 
   const value = useMemo(
-    () => ({ token, user, isAuthenticated: !!token, login, logout }),
-    [token, user, login, logout]
+    () => ({
+      token,
+      user,
+      isAuthenticated: !!token,
+      loading,
+      login,
+      logout,
+    }),
+    [token, user, loading, login, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

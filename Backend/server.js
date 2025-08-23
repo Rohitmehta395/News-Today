@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 
 import newsRoutes from "./routes/newsRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import suggestRoutes from "./routes/suggestRoutes.js"; // ✅ Import suggest route
 
 dotenv.config();
 
@@ -12,8 +13,9 @@ const app = express();
 
 // ✅ Allowed origins
 const allowedOrigins = [
-  "https://news-today-alpha.vercel.app", // your Vercel frontend
-  "http://localhost:3000", // local dev
+  "https://news-today-alpha.vercel.app", // deployed frontend
+  "http://localhost:3000", // CRA dev
+  "http://localhost:5173", // Vite dev
 ];
 
 app.use(
@@ -33,17 +35,18 @@ app.use(
 
 app.use(express.json());
 
-// Routes
+// ✅ Routes
 app.use("/api/news", newsRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/suggest", suggestRoutes); // ✅ Autocomplete API
 
-// DB connection
+// ✅ DB connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
-// Start server
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

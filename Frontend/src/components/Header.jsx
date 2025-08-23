@@ -5,21 +5,51 @@ import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Header({ nav = [] }) {
   const [search, setSearch] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, user, logout } = useAuth();
+
+  // ✅ fetch suggestions while typing
+  const handleChange = async (e) => {
+    const query = e.target.value;
+    setSearch(query);
+
+    if (query.length > 1) {
+      try {
+        // 🔥 use `q` to match backend
+        const res = await fetch(
+          `http://localhost:5000/api/suggest?q=${encodeURIComponent(query)}`
+        );
+        const data = await res.json();
+        setSuggestions(data);
+      } catch (err) {
+        console.error("Error fetching suggestions:", err);
+      }
+    } else {
+      setSuggestions([]);
+    }
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (search.trim() !== "") {
       navigate(`/search/${encodeURIComponent(search.trim())}`);
       setSearch("");
+      setSuggestions([]);
       if (menuOpen) setMenuOpen(false);
     }
   };
 
+  const handleSuggestionClick = (s) => {
+    navigate(`/search/${encodeURIComponent(s)}`);
+    setSearch("");
+    setSuggestions([]);
+    if (menuOpen) setMenuOpen(false);
+  };
+
   return (
-    <header className="bg-white border-b">
+    <header className="bg-white border-b relative">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
         {/* Left Section: Menu + Search */}
         <div className="flex items-center gap-4 text-black">
@@ -36,50 +66,63 @@ export default function Header({ nav = [] }) {
             </svg>
           </button>
 
-          {/* Search */}
-          <form
-            onSubmit={handleSearch}
-            className="hidden sm:flex items-center border rounded px-2"
-          >
-            <input
-              type="text"
-              placeholder="Search news..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="outline-none px-2 py-1 text-sm"
-            />
-            <button
-              type="submit"
-              aria-label="Search"
-              className="p-1 hover:opacity-70"
+          {/* Search (desktop) */}
+          <div className="relative">
+            <form
+              onSubmit={handleSearch}
+              className="hidden sm:flex items-center border rounded px-2"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <circle
-                  cx="11"
-                  cy="11"
-                  r="7"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-                <line
-                  x1="20"
-                  y1="20"
-                  x2="16.65"
-                  y2="16.65"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-              </svg>
-            </button>
-          </form>
+              <input
+                type="text"
+                placeholder="Search news..."
+                value={search}
+                onChange={handleChange}
+                className="outline-none px-2 py-1 text-sm"
+              />
+              <button
+                type="submit"
+                aria-label="Search"
+                className="p-1 hover:opacity-70"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="7"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <line
+                    x1="20"
+                    y1="20"
+                    x2="16.65"
+                    y2="16.65"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </button>
+            </form>
+
+            {/* Suggestions dropdown */}
+            {suggestions.length > 0 && (
+              <ul className="absolute top-full left-0 w-full bg-white border rounded shadow-md mt-1 z-50 text-sm">
+                {suggestions.map((s, i) => (
+                  <li
+                    key={i}
+                    onClick={() => handleSuggestionClick(s)}
+                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                  >
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
 
         {/* Logo */}
-        <Link
-          to="/"
-          aria-label="Go to homepage"
-          className="flex items-center gap-[6px]"
-        >
+        <Link to="/" className="flex items-center gap-[6px]">
           <span className="bg-black text-white font-bold text-2xl px-3 py-1">
             N
           </span>
@@ -99,7 +142,10 @@ export default function Header({ nav = [] }) {
                 Hi, {user?.name?.split(" ")[0] || "User"}
               </span>
               <button
-                onClick={logout}
+                onClick={() => {
+                  logout();
+                  navigate("/");
+                }}
                 className="bg-gray-900 text-white px-4 py-1 rounded hover:bg-gray-800"
               >
                 Logout
@@ -162,6 +208,7 @@ export default function Header({ nav = [] }) {
       {menuOpen && (
         <nav className="md:hidden border-t">
           <ul className="flex flex-col gap-4 px-4 py-3 text-sm font-medium">
+            {/* Mobile Search */}
             <form
               onSubmit={handleSearch}
               className="flex items-center border rounded px-2"
@@ -170,7 +217,7 @@ export default function Header({ nav = [] }) {
                 type="text"
                 placeholder="Search news..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={handleChange}
                 className="outline-none px-2 py-1 text-sm w-full"
               />
               <button
@@ -181,6 +228,22 @@ export default function Header({ nav = [] }) {
                 🔍
               </button>
             </form>
+
+            {/* Mobile suggestions */}
+            {suggestions.length > 0 && (
+              <ul className="bg-white border rounded shadow-md mt-1 z-50 text-sm">
+                {suggestions.map((s, i) => (
+                  <li
+                    key={i}
+                    onClick={() => handleSuggestionClick(s)}
+                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                  >
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            )}
+
             <li>
               <NavLink
                 to="/"
@@ -197,6 +260,7 @@ export default function Header({ nav = [] }) {
                 Home
               </NavLink>
             </li>
+
             {nav.map((cat) => (
               <li key={cat}>
                 <NavLink
