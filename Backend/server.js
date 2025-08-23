@@ -11,25 +11,23 @@ dotenv.config();
 
 const app = express();
 
-// ✅ Allowed origins
-const allowedOrigins = [
-  "https://news-today-alpha.vercel.app",
-  "https://news-today-3mni58wog-rohitmehta395s-projects.vercel.app", // your deployed frontend
-  "http://localhost:3000", // CRA dev
-  "http://localhost:5173", // Vite dev
-];
-
+// ✅ Allowed origins (patterns instead of exact match)
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (curl, Postman, mobile apps)
+      // Allow requests with no origin (Postman, curl, etc.)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS: " + origin));
+      // ✅ Allow any vercel.app subdomain
+      if (
+        origin.endsWith(".vercel.app") ||
+        origin.startsWith("http://localhost:3000") ||
+        origin.startsWith("http://localhost:5173")
+      ) {
+        return callback(null, true);
       }
+
+      return callback(new Error("Not allowed by CORS: " + origin));
     },
     credentials: true,
   })
