@@ -10,6 +10,9 @@ import React, {
 
 const AuthContext = createContext(null);
 
+// ✅ Use same API base everywhere
+const API_BASE = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem("token"));
   const [user, setUser] = useState(() => {
@@ -19,7 +22,7 @@ export function AuthProvider({ children }) {
       return null;
     }
   });
-  const [loading, setLoading] = useState(true); // start as loading
+  const [loading, setLoading] = useState(true);
 
   // ✅ Sync state from storage
   const syncFromStorage = useCallback(() => {
@@ -38,7 +41,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       syncFromStorage();
-      window.dispatchEvent(new Event("auth")); // notify other tabs/components
+      window.dispatchEvent(new Event("auth"));
     },
     [syncFromStorage]
   );
@@ -59,7 +62,7 @@ export function AuthProvider({ children }) {
     }
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.REACT_APP_API}/api/auth/me`, {
+      const res = await fetch(`${API_BASE}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
