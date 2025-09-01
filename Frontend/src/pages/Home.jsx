@@ -151,15 +151,6 @@ export default function Home({ nav = [] }) {
         </section>
       )}
 
-      {/* News Categories */}
-      {categories.map((cat) => (
-        <CategorySection
-          key={cat}
-          title={cat[0].toUpperCase() + cat.slice(1) + " News"}
-          articles={newsData[cat]}
-        />
-      ))}
-
       {/* Call to Action for Non-Authenticated Users */}
       {!isAuthenticated && (
         <div className="bg-gray-50 border border-gray-200 p-8 rounded-lg text-center">
@@ -185,6 +176,15 @@ export default function Home({ nav = [] }) {
           </div>
         </div>
       )}
+
+      {/* News Categories */}
+      {categories.map((cat) => (
+        <CategorySection
+          key={cat}
+          title={cat[0].toUpperCase() + cat.slice(1) + " News"}
+          articles={newsData[cat]}
+        />
+      ))}
     </div>
   );
 }
