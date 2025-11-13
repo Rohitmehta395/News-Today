@@ -39,7 +39,7 @@ export default function Register() {
       onSubmit={handleSubmit}
       className="space-y-4 max-w-md mx-auto p-4 border rounded"
     >
-      <h2 className="text-xl font-bold">Register</h2>
+      <h2 className="text-xl font-bold text-cyan-500">Register</h2>
       {error && <p className="text-red-600">{error}</p>}
       <input
         type="text"

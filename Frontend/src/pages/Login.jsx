@@ -40,7 +40,7 @@ export default function Login() {
       onSubmit={handleSubmit}
       className="space-y-4 max-w-md mx-auto p-4 border rounded"
     >
-      <h2 className="text-xl font-bold">Login</h2>
+      <h2 className="text-xl font-bold text-green-500">Login</h2>
       {error && <p className="text-red-600">{error}</p>}
       <input
         type="email"
