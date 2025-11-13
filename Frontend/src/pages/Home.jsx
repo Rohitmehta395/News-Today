@@ -70,7 +70,7 @@ export default function Home({ nav = [] }) {
           className="w-full h-48 object-cover"
         />
       ) : (
-        <div className="w-full h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+        <div className="w-full h-48 bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
           <FaUser className="text-white text-4xl" />
         </div>
       )}
@@ -121,7 +121,7 @@ export default function Home({ nav = [] }) {
     <div className="space-y-10">
       {/* Welcome Banner for Authenticated Users */}
       {isAuthenticated && (
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-lg shadow-lg">
+        <div className="bg-gradient-to-r from-blue-600 to-blue-600 text-white p-6 rounded-lg shadow-lg">
           <div className="flex flex-col sm:flex-row items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold mb-2">Share Your Story</h2>
@@ -174,7 +174,7 @@ export default function Home({ nav = [] }) {
           <div className="flex justify-center gap-3">
             <Link
               to="/register"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
+              className="bg-gradient-to-r from-blue-600 to-blue-600 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
             >
               Get Started
             </Link>

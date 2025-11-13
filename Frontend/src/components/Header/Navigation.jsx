@@ -30,7 +30,7 @@ export default function Navigation({ nav = [], isMobile = false, onNavigate }) {
                   className={({ isActive }) =>
                     `block px-4 py-3 rounded-lg transition-all duration-200 ${
                       isActive
-                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg"
+                        ? "bg-gradient-to-r from-blue-600 to-blue-600 text-white font-semibold shadow-lg"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                     }`
                   }
@@ -47,7 +47,7 @@ export default function Navigation({ nav = [], isMobile = false, onNavigate }) {
                     className={({ isActive }) =>
                       `block px-4 py-3 rounded-lg transition-all duration-200 ${
                         isActive
-                          ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg"
+                          ? "bg-gradient-to-r from-blue-600 to-blue-600 text-white font-semibold shadow-lg"
                           : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                       }`
                     }
@@ -76,7 +76,7 @@ export default function Navigation({ nav = [], isMobile = false, onNavigate }) {
               className={({ isActive }) =>
                 `px-4 py-2 rounded-lg block whitespace-nowrap transition-all duration-200 font-medium ${
                   isActive
-                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
+                    ? "bg-gradient-to-r from-blue-600 to-blue-600 text-white shadow-md"
                     : "text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700"
                 }`
               }
@@ -91,7 +91,7 @@ export default function Navigation({ nav = [], isMobile = false, onNavigate }) {
                 className={({ isActive }) =>
                   `px-4 py-2 rounded-lg block whitespace-nowrap transition-all duration-200 font-medium ${
                     isActive
-                      ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
+                      ? "bg-gradient-to-r from-blue-600 to-blue-600 text-white shadow-md"
                       : "text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700"
                   }`
                 }

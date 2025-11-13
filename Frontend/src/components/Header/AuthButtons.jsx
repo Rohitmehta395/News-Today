@@ -53,7 +53,7 @@ export default function AuthButtons() {
           {/* User Menu Button */}
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm sm:text-base"
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm sm:text-base"
           >
             <div className="w-7 h-7 bg-white/20 rounded-full flex items-center justify-center">
               <FaUser className="w-3 h-3" />
@@ -91,7 +91,7 @@ export default function AuthButtons() {
                   {/* User Info */}
                   <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
                         <FaUser className="w-5 h-5 text-white" />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -110,7 +110,7 @@ export default function AuthButtons() {
                     <Link
                       to="/create-article"
                       onClick={closeDropdown}
-                      className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-gray-700 dark:hover:to-gray-700 transition-all duration-200"
+                      className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-50 dark:hover:from-gray-700 dark:hover:to-gray-700 transition-all duration-200"
                     >
                       <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
                         <FaPlus className="w-4 h-4 text-blue-600 dark:text-blue-400" />
@@ -121,10 +121,10 @@ export default function AuthButtons() {
                     <Link
                       to="/my-articles"
                       onClick={closeDropdown}
-                      className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-gray-700 dark:hover:to-gray-700 transition-all duration-200"
+                      className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-50 dark:hover:from-gray-700 dark:hover:to-gray-700 transition-all duration-200"
                     >
-                      <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <FaList className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                      <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <FaList className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       </div>
                       <span className="font-medium">My Articles</span>
                     </Link>
@@ -150,7 +150,7 @@ export default function AuthButtons() {
         <>
           <Link
             to="/register"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 sm:px-5 py-2 rounded-lg text-xs sm:text-sm hover:shadow-lg transition-all duration-300 hover:scale-105 whitespace-nowrap font-medium"
+            className="bg-gradient-to-r from-blue-600 to-blue-600 text-white px-3 sm:px-5 py-2 rounded-lg text-xs sm:text-sm hover:shadow-lg transition-all duration-300 hover:scale-105 whitespace-nowrap font-medium"
           >
             <span className="hidden sm:inline">Get Started</span>
             <span className="sm:hidden">Join</span>

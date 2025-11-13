@@ -113,7 +113,7 @@ export default function SearchBar({
         <div className="w-full sm:w-72">
           <form
             onSubmit={handleSearch}
-            className={`flex items-center rounded-full px-4 py-2.5 w-full transition-all duration-300 ${
+            className={`flex items-center rounded-full px-4 py-0.5 w-full transition-all duration-300 ${
               isFocused
                 ? "bg-white dark:bg-gray-800 shadow-lg ring-2 ring-blue-500 dark:ring-blue-400"
                 : "bg-gray-100 dark:bg-gray-800 shadow-sm"
@@ -161,7 +161,7 @@ export default function SearchBar({
       ) : (
         <button
           onClick={toggleSearch}
-          className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 active:scale-95"
+          className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-blue-600 flex items-center justify-center text-white cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 active:scale-95"
           aria-label="Open search"
         >
           <FaSearch className="w-4 h-4" />
