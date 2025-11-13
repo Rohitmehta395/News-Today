@@ -4,7 +4,7 @@ import {
   loginUser,
   getMe,
 } from "../controllers/authController.js";
-import { authMiddleware } from "../middleware/authMiddleware.js"; // ✅ match the export name
+import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 

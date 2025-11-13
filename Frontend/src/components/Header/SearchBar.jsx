@@ -1,7 +1,7 @@
-// src/components/Header/SearchBar.jsx
+// Frontend/src/components/Header/SearchBar.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaTimes } from "react-icons/fa";
 
 const useWindowSize = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -23,6 +23,7 @@ export default function SearchBar({
   const [search, setSearch] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const navigate = useNavigate();
   const inputRef = useRef(null);
@@ -93,6 +94,12 @@ export default function SearchBar({
     if (onSearch) onSearch();
   };
 
+  const clearSearch = () => {
+    setSearch("");
+    setSuggestions([]);
+    inputRef.current?.focus();
+  };
+
   const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
 
   const shouldShowForm = !isDesktop || isSearchOpen;
@@ -103,34 +110,48 @@ export default function SearchBar({
       className={`relative flex items-center justify-end ${className}`}
     >
       {shouldShowForm ? (
-        <div className="w-full sm:w-64">
+        <div className="w-full sm:w-72">
           <form
             onSubmit={handleSearch}
-            className="flex items-center border border-gray-300 rounded-full px-3 py-1 w-full bg-white shadow-sm h-9"
+            className={`flex items-center rounded-full px-4 py-2.5 w-full transition-all duration-300 ${
+              isFocused
+                ? "bg-white dark:bg-gray-800 shadow-lg ring-2 ring-blue-500 dark:ring-blue-400"
+                : "bg-gray-100 dark:bg-gray-800 shadow-sm"
+            }`}
           >
+            <FaSearch className="text-gray-400 dark:text-gray-500 mr-3 flex-shrink-0" />
+
             <input
               ref={inputRef}
               type="text"
-              placeholder="Search..."
+              placeholder="Search news..."
               value={search}
               onChange={handleChange}
-              className="outline-none border-none text-sm w-full bg-transparent text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-0"
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              className="outline-none border-none text-sm w-full bg-transparent text-gray-700 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-0"
             />
 
-            <FaSearch
-              onClick={handleSearch}
-              className="ml-2 text-gray-600 cursor-pointer hover:opacity-70"
-            />
+            {search && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="ml-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <FaTimes className="w-4 h-4" />
+              </button>
+            )}
           </form>
 
           {suggestions.length > 0 && (
-            <ul className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg mt-2 z-50 text-sm max-h-60 overflow-y-auto">
+            <ul className="absolute top-full left-0 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl mt-2 z-50 text-sm max-h-60 overflow-y-auto">
               {suggestions.map((s, i) => (
                 <li
                   key={i}
                   onClick={() => handleSuggestionClick(s)}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
+                  className="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-b-0 text-gray-700 dark:text-gray-200 transition-colors"
                 >
+                  <FaSearch className="inline mr-2 text-gray-400 dark:text-gray-500 text-xs" />
                   {s}
                 </li>
               ))}
@@ -138,10 +159,13 @@ export default function SearchBar({
           )}
         </div>
       ) : (
-        <FaSearch
+        <button
           onClick={toggleSearch}
-          className="w-[36px] h-[36px] p-2 rounded-full bg-gradient-to-r from-[#2AF598] to-[#009EFD] text-white cursor-pointer transition-all duration-300 shadow-lg hover:scale-110 active:scale-95"
-        />
+          className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 active:scale-95"
+          aria-label="Open search"
+        >
+          <FaSearch className="w-4 h-4" />
+        </button>
       )}
     </div>
   );
